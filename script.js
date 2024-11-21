@@ -1,10 +1,14 @@
 let userHP = 7;
-let outLine = new Array();
-const givenWord = ["testezjocul", "spanzuratoarea", "esteuntest", "hangman", "programare", "wellcode"];
-let randomIndex = Math.floor(Math.random() * givenWord.length);
+const outLine = [];
+let givenWord = [];
+let randomIndex;
 
-for (let i = 0; i < givenWord[randomIndex].length; ++i) {
-  outLine.push("_");
+function randomWordGenerator() {
+  givenWord = ["testezjocul", "spanzuratoarea", "esteuntest", "hangman", "programare", "wellcode",];
+  randomIndex = Math.floor(Math.random() * givenWord.length);
+  for (let i = 0; i < givenWord[randomIndex].length; ++i) {
+    outLine.push("_");
+  }
 }
 
 function playGround() {
@@ -18,10 +22,10 @@ let validLetters = 0;
 function checkLetter(event) {
   event.preventDefault();
   let letterInput = document.getElementById("letterInput");
-  let currentLetter = letterInput.value.toLowerCase();
+  const currentLetter = letterInput.value.toLowerCase();
   letterInput.value = "";
   for (let i = 0; i < givenWord[randomIndex].length; ++i) {
-    if (currentLetter == givenWord[randomIndex][i]) {
+    if (currentLetter == givenWord[randomIndex][i] && outLine[i] == "_") {
       outLine[i] = currentLetter;
       ++validLetters;
     }
@@ -31,24 +35,18 @@ function checkLetter(event) {
     --userHP;
     document.getElementById("hitpoints").innerHTML = userHP;
   }
+  gameStatus();
+}
+
+function gameStatus() {
+  let result = document.createElement("p");
   if (userHP == 0) {
-    loserParagraph();
+    document.getElementById("wordContainer").textContent = "";
+    result.textContent = "You lost!";
   }
   if (validLetters == givenWord[randomIndex].length && userHP != 0) {
-    winnerParagaph();
+    document.getElementById("wordContainer").textContent = "";
+    result.textContent = "You won!";
   }
-}
-
-function loserParagraph() {
-  let lostParagraph = document.createElement("p");
-  document.getElementById("wordContainer").textContent = "";
-  lostParagraph.textContent = "You lost!";
-  document.getElementById("wordContainer").appendChild(lostParagraph);
-}
-
-function winnerParagaph() {
-  let wonParagraph = document.createElement("p");
-  document.getElementById("wordContainer").textContent = "";
-  wonParagraph.textContent = "You won!";
-  document.getElementById("wordContainer").appendChild(wonParagraph);
+  document.getElementById("wordContainer").appendChild(result);
 }
